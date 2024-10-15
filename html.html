@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basketball Game</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0; 
+        }
+
+        #allcontainer {
+            display: flex;
+        }
+
+        #usercontainer {
+            text-align: center;
+            position: relativece;
+            margin-left: 10px;
+            margin-top: 150px;
+            margin-right: 50px;
+            
+        
+        }
+
+        #gamecontainer {
+            text-align: center;
+            position: relative;
+            margin-right: 300px;
+            margin-left: 0px;
+
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+        }        
+
+        #gameArea {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            border: 5px solid #000;
+            overflow: hidden;
+            background-color: #cce5ff;
+            border-radius: 10px;
+
+        }
+
+        
+        .basketball {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: orange;
+            
+        }
+
+        #basketballNet {
+            position: absolute;
+            bottom: 0;
+            left: 150px; /* Center the net */
+            width: 100px; /* Reduced width of the net to 100px */
+            height: 40px; /* Reduced height of the net to 25px */
+            background-color: white; /* Made it semi-transparent */
+            border: 2px solid #000; /* Optional: add a border for visibility */
+            border-radius: 0 0 50px 50px; /* Bowl shape */    
+        }
+
+        #hoop {
+            position: absolute;
+            width: 100px;
+            height: 10px;
+            background-color: #ff0000;
+            bottom: 40px; /* Position it at the bottom of the game area */
+            left: 0px; /* Center it horizontally */
+           
+        }
+
+
+        #net {
+            position: absolute;
+            bottom: 0; /* Align the net at the bottom */
+            left: 0;
+            right: 0;
+            height: 40px; /* Height of the net */
+            border-left: 5px solid black;
+            border-right: 5px solid black;
+            border-bottom: 5px solid black; /* U-shape */
+            border-radius: 0 0 60px 60px; /* Rounded corners for the U-shape */
+            background-color: transparent;
+        }
+        
+
+
+        #timer {
+            font-size: 24px;
+            margin: 10px;
+            color: red;
+            font-weight: bolder;
+            
+                        
+        }
+
+        #score {
+            font-size: 24px;
+            margin: 10px;
+            color: blue;
+            font-weight: bolder;
+        }
+
+        #buttonContainer {
+            display: flex;
+            gap: 5px; /* Space between buttons */
+         
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bolder;
+            border: 2px solid;
+                       
+        }
+
+        #userSection {
+            background-color: #2cd1dd;
+            padding: 20px;
+            border-radius: 20px;
+            width: 200px;
+            height: 200px;
+            border: 5px solid;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+
+        }
+
+                    /* Game over message */
+                    #gameOverMessage {
+            display: none;
+            font-size: 36px;
+            font-weight: bold;
+            color: red;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+        }
+
+        .confetti {
+            position: fixed;
+            top: -10px;
+            width: 100%;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        #clock {
+            width: 100px;
+            height: 100px;
+            border: 5px solid black;
+            border-radius: 50%;
+            position: relative;
+            margin: 0 auto;
+            background-color: white;
+        }
+        .hand {
+            position: absolute;
+            background-color: black;
+            transform-origin: bottom;
+            left: 50%;
+            bottom: 50%;
+            transform: rotate(90deg);
+        }
+        .second-hand {
+            background-color: red;
+            width: 2px;
+            height: 40%;
+        }
+        .minute-hand {
+            width: 3px;
+            height: 40%;
+        }
+        .hour-hand {
+            width: 4px;
+            height: 25%;
+            background-color: blue;
+        }
+        .number {
+            position: absolute;
+            font-size: 12px;
+        }
+
+        #nameInput input {
+            padding: 5px;
+            font-size: 14px;
+            text-align: center;
+            font-weight: bolder;
+
+        }
+
+        #nameError {
+            color: red;
+            font-size: 14px;
+            font-weight: bolder;
+            margin-bottom: 10px;
+            visibility: hidden;
+        }
+        
+
+    </style>
+</head>
+<body>
+
+    <h1></h1>
+    <div id="allcontainer">
+        <div id="usercontainer">
+            <div id="userSection">
+                <div id="nameInput"><b>Name</b>
+                    <input type="text" id="playerName" placeholder="Enter your name" />
+                </div>
+                <div id="nameError">Name must be at least 6 characters long</div>
+                <div id="clock">
+                    <div class="hand hour-hand" id="hourHand"></div>
+                    <div class="hand minute-hand" id="minuteHand"></div>
+                    <div class="hand second-hand" id="secondHand"></div>
+                    <!-- Clock numbers -->
+                    <div class="number" style="top: 5%; left: 50%; transform: translate(-50%, -50%);">12</div>
+                    <div class="number" style="top: 50%; left: 95%; transform: translate(-50%, -50%);">3</div>
+                    <div class="number" style="top: 95%; left: 50%; transform: translate(-50%, -50%);">6</div>
+                    <div class="number" style="top: 50%; left: 5%; transform: translate(-50%, -50%);">9</div>
+                </div>
+            </div>
+        </div>
+        <div id="gamecontainer">
+            <div id="timer">Timer: 2:00</div>
+            <div id="score">Score: 0</div>
+            <div class="container">
+                <div id="gameArea">
+                    <div id="basketballNet">
+                        <div id="hoop"></div>
+                        <div id="net"></div>
+                    </div>
+                    <div id="gameOverMessage"></div> <!-- Game over message -->
+                </div>
+            </div>        
+        </div>               
+    </div>
+    <button id="startButton" disabled>Start</button>
+    <div id="buttonContainer">
+        <button id="leftButton">&lt;</button>
+        <button id="rightButton">&gt;</button>
+    </div>
+    </div>
+    <canvas class="confetti"></canvas> <!-- Confetti Canvas --> 
+
+    <script>
+        let timerDisplay = document.getElementById('timer');
+        let gameArea = document.getElementById('gameArea');
+        let startButton = document.getElementById('startButton');
+        let leftButton = document.getElementById('leftButton');
+        let rightButton = document.getElementById('rightButton');
+        let basketballNet = document.getElementById('basketballNet');
+        let hoop = document.getElementById('hoop');
+        let scoreDisplay = document.getElementById('score');
+        let playerNameInput = document.getElementById('playerName');
+        let nameError = document.getElementById('nameError');
+        let timer;
+        let isGameRunning = false;
+        let score = 0; // Store score
+        let colors = [
+            '#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#A1FF33', '#5733FF',
+            '#33FFF7', '#FF8C33', '#8C33FF', '#FF333D', '#33FF97', '#33D4FF',
+            '#FFBD33', '#C133FF', '#FF3391', '#91FF33', '#5733A1', '#33A1FF',
+            '#FFD433', '#FF33D4'
+        ];
+
+         // Confetti effect setup
+         const confetti = document.querySelector('.confetti');
+        const ctx = confetti.getContext('2d');
+        let particles = [];
+
+        function createParticles() {
+            particles = [];
+            for (let i = 0; i < 100; i++) {
+                particles.push({
+                    x: Math.random() * confetti.width,
+                    y: Math.random() * confetti.height,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speedX: Math.random() * 2 - 1,
+                    speedY: Math.random() * 2 + 1
+                });
+            }
+        }
+
+        function updateParticles() {
+            ctx.clearRect(0, 0, confetti.width, confetti.height);
+            particles.forEach((p) => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+                if (p.y > confetti.height) p.y = -10;
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, 5, 5);
+            });
+            requestAnimationFrame(updateParticles);
+        }
+
+        function startConfetti() {
+            confetti.width = window.innerWidth;
+            confetti.height = window.innerHeight;
+            createParticles();
+            updateParticles();
+        }
+
+        function stopConfetti() {
+            particles = [];
+            ctx.clearRect(0, 0, confetti.width, confetti.height);
+        }
+
+        // Enable the start button when a name is entered
+        playerNameInput.addEventListener('input', function() {
+            const name = playerNameInput.value.trim();
+            if (name.length >= 6) {
+                startButton.disabled = false;
+                nameError.style.visibility = 'hidden';               
+            } else {
+                startButton.disabled = true;
+                nameError.style.visibility = 'visible';                
+            }
+        });
+
+
+        // Create 20 balls and place them at the top
+        function initializeBalls() {
+            for (let i = 0; i < 20; i++) {
+                createBasketball();
+            }
+        }
+
+        function createBasketball() {
+            let ball = document.createElement('div');
+            ball.classList.add('basketball');
+            ball.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            ball.style.left = Math.floor(Math.random() * (gameArea.offsetWidth - 50)) + 'px'; // Random position from 0 to width - ball size (50px)
+            ball.style.top = '0'; // Position balls at the top of the game area
+            gameArea.appendChild(ball);
+            return ball;
+        }
+
+        function dropBasketball(ball) {
+            ball.style.transition = 'top 4s linear';
+            ball.style.top = '350px'; // Drop the ball to the bottom of the game area
+
+            ball.addEventListener('transitionend', function() {
+                // Check if the ball is in the net after it has finished falling
+                if (isBallInNet(ball)) {
+                    score++; // Increment score when ball enters the net
+                    scoreDisplay.textContent = `Score: ${score}`; // Update score display
+                }
+                // Remove the ball once it touches the ground or the net
+                gameArea.removeChild(ball);
+
+                // Create a new ball to replace the one that just fell
+                createBasketball(); // This adds a new ball at the top
+                dropNextBasketball(); // Start dropping the next ball
+            }, { once: true }); // Ensures the event listener is removed after it runs once
+        }
+
+        function isBallInNet(ball) {
+            let ballRect = ball.getBoundingClientRect();
+            let hoopRect = hoop.getBoundingClientRect();
+            let netRect = basketballNet.getBoundingClientRect();
+            
+            // Check if the ball is within the area of the hoop and net
+            return (
+                ballRect.bottom >= hoopRect.top && // Ball reaches hoop level
+                ballRect.top <= hoopRect.bottom && // Ball goes inside hoop top area
+                ballRect.left + ballRect.width / 2 >= netRect.left && // Center of ball is within net bounds
+                ballRect.left + ballRect.width / 2 <= netRect.right && // Center of ball is within net bounds
+                ballRect.bottom >= netRect.top && // Ensure ball reaches into net region
+                ballRect.top <= netRect.bottom
+            );
+        }
+
+        function startGame() {
+            if (isGameRunning) return;
+
+            isGameRunning = true;
+            let timeLeft = 120;
+            score = 0; // Reset score at the start of the game
+            scoreDisplay.textContent = 'Score: 0';
+            timerDisplay.textContent = 'Timer: 2:00';
+            gameOverMessage.style.display = 'none';
+            stopConfetti();
+
+            timer = setInterval(function() {
+                timeLeft--;
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                timerDisplay.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    isGameRunning = false;
+                    gameOverMessage.textContent = 'Game Over!';
+                    gameOverMessage.style.display = 'block';
+                    startConfetti(); // Start the confetti effect
+
+                    
+                }
+            }, 1000);
+
+            initializeBalls(); // Initialize balls at the start
+            dropNextBasketball(); // Start the first drop
+        }
+
+        function dropNextBasketball() {
+            // Stop dropping balls if the game has ended
+            if (!isGameRunning) return;
+
+            // Find all balls in the game area
+            let balls = document.querySelectorAll('.basketball');
+            if (balls.length > 0) {
+                dropBasketball(balls[0]); // Drop the first ball in the list
+            }
+        }
+
+        // Movement logic for the basketball net
+        function moveNet(direction) {
+            let netRect = basketballNet.getBoundingClientRect();
+            let gameAreaRect = gameArea.getBoundingClientRect();
+            let currentLeft = netRect.left - gameAreaRect.left;
+            let maxRight = gameArea.offsetWidth - basketballNet.offsetWidth; // Net's maximum right position
+            let moveDistance = 20; // Movement distance in pixels
+
+            if (direction === 'left') {
+                if (currentLeft > 0) {
+                    basketballNet.style.left = Math.max(currentLeft - moveDistance, 0) + 'px'; // Move left
+                }
+            } else if (direction === 'right') {
+                if (currentLeft < maxRight) {
+                    basketballNet.style.left = Math.min(currentLeft + moveDistance, maxRight) + 'px'; // Move right
+                }
+            }
+        }
+
+        // Event listeners
+        startButton.addEventListener('click', startGame);
+        leftButton.addEventListener('click', () => moveNet('left'));
+        rightButton.addEventListener('click', () => moveNet('right'));
+
+        // Clock update function
+        function updateClock() {
+            let date = new Date();
+            let hours = date.getHours() % 12;
+            let minutes = date.getMinutes();
+            let seconds = date.getSeconds();
+
+            document.getElementById('hourHand').style.transform = 'rotate(' + (hours * 30 + minutes / 2) + 'deg)';
+            document.getElementById('minuteHand').style.transform = 'rotate(' + (minutes * 6) + 'deg)';
+            document.getElementById('secondHand').style.transform = 'rotate(' + (seconds * 6) + 'deg)';
+        }
+
+        // Start the clock update interval
+        clockInterval = setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>
